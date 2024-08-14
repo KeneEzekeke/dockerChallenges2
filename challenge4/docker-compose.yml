@@ -1,0 +1,31 @@
+version: '3'
+services:
+  node-service:
+    build: ./api
+    environment:
+      DB_HOST: ${DB_HOST}
+      DB_DATABASE: ${DB_DATABASE}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "3000"  # Bind to dynamic port on the host
+    networks:
+      - app-network
+  nginx:
+    build: ./nginx
+    ports:
+      - "8080:80"  # Ensure Nginx listens on port 8080
+    networks:
+      - app-network
+  db:
+    build: ./db
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge
